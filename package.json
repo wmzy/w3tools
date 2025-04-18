@@ -1,0 +1,77 @@
+{
+  "name": "w3tools",
+  "version": "0.0.0",
+  "description": "",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "commit": "lint-staged && git-cz -n",
+    "build": "vite build && npm run build:types",
+    "build:types": "tsc -p tsconfig.build.json",
+    "dev": "vite",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build -- --emptyOutDir",
+    "postpublish": "git push --follow-tags",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint --fix src test",
+    "test": "vitest",
+    "start": "vitest watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmzy/w3tools.git"
+  },
+  "keywords": [
+    "web3",
+    "tools"
+  ],
+  "author": "wmzy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wmzy/w3tools/issues"
+  },
+  "homepage": "https://github.com/wmzy/w3tools#readme",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "lint-staged": {
+    "*.js": [
+      "cross-env NODE_ENV=production eslint --fix",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "@vitest/coverage-v8": "^3.0.5",
+    "commitizen": "^4.3.1",
+    "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.20.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "tools-config": "^0.2.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "viem": "^2.26.1"
+  }
+}
