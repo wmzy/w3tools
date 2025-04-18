@@ -2,6 +2,9 @@
   "name": "w3tools",
   "version": "0.1.0",
   "description": "",
+  "bin": {
+    "w3tools": "./dist/cli.es.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -72,6 +75,8 @@
     "vitest": "^3.0.5"
   },
   "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
     "viem": "^2.26.1"
   }
 }

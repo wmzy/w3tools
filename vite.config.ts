@@ -9,15 +9,18 @@ export default defineConfig({
       // esmExternals: true,
     },
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        cli: resolve(__dirname, 'src/cli/index.ts'),
+      },
       name: 'w3tools',
       formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format, entryName) => `${entryName}.${format}.js`,
     },
     minify: false,
     sourcemap: true,
     rollupOptions: {
-      external: /^[^\/\.].*/,
+      external: /^(?!@\/)[^\/\.].*/,
       output: {
         interop: 'esModule',
       },
