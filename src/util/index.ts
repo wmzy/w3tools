@@ -73,3 +73,13 @@ export function rangeMap<T>(length: number, map: (i: number) => T) {
 export function range(start: number, end: number) {
   return rangeMap(end - start + 1, (i) => start + i);
 }
+
+export function camelCase(str: string) {
+  // 先转换为小写并去除首尾空格
+  const trimmed = str.trim().toLowerCase();
+  return str
+    .trim()
+    .toLowerCase()
+    .replace(/[-_\s]+([a-z0-9])/g, (_, char) => char.toUpperCase())
+    .replace(/[-_\s]+/g, '');
+}

@@ -16,6 +16,7 @@
   "scripts": {
     "commit": "lint-staged && git-cz -n",
     "build": "vite build && npm run build:types",
+    "build:watch": "vite build --watch",
     "build:types": "tsc -p tsconfig.build.json",
     "dev": "vite",
     "preview": "vite preview",
@@ -75,8 +76,14 @@
     "vitest": "^3.0.5"
   },
   "dependencies": {
+    "@inquirer/prompts": "^7.4.1",
+    "@types/inquirer": "^9.0.7",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
+    "conf": "^13.1.0",
+    "env-editor": "^1.1.0",
+    "inquirer": "^12.5.2",
+    "open-editor": "^5.1.0",
     "viem": "^2.26.1"
   }
 }

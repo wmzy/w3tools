@@ -11,11 +11,39 @@ program
   .name('w3tools')
   .description('A collection of Web3 tools')
   .version(version)
-  .option(
-    '-c, --chain <chain>',
-    'Chain to use (mainnet, hoodi, etc.)',
-    'mainnet'
-  );
+  .option('-c, --chain <chain>', 'Chain to use (mainnet, hoodi, etc.)');
+
+program.command('chain').description('Show chain info.').option('-d, --define');
+
+program
+  .command('define-chain')
+  .description('Define chain.')
+  .option('-f, --fork [chain]', 'Fork from a chain.')
+  .action(async (options) => {
+    try {
+      await (await import('./define-chain')).default(options.fork);
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
+
+program
+  .command('remove-chain')
+  .description('Remove chain.')
+  .action(function () {});
+
+program
+  .command('switch-chain')
+  .description('Switch chain.')
+  .argument('[target]', 'chain name or id')
+  .option('-f, --fork [chain]', 'Fork from a chain.')
+  .action(function () {});
 
 program
   .command('block-number')
@@ -41,7 +69,7 @@ program
     }
   });
 
-const blockCommand = program
+program
   .command('block')
   .description(
     'Returns information about a block at a block number, hash or tag.'
