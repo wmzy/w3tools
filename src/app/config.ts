@@ -41,20 +41,16 @@ export const getChain = (
 };
 
 // 获取所有链
-export const getUserChains = async (): Promise<Chain[]> => {
+export const getUserChains = async (): Promise<string[]> => {
   const config = new Conf<GlobalConfig>({
     projectName,
   });
   const configPath = config.path;
   const dir = path.dirname(configPath);
   const files = await fs.readdir(path.join(dir, 'chains'));
-  return files
-    .map((file) => {
-      // rm .json
-      const name = file.slice(0, -5);
-      return getChain(name);
-    })
-    .filter((chain): chain is Chain => chain !== undefined);
+  return files.map((file) => {
+    return file.slice(0, -5);
+  });
 };
 
 export const getCurrentChain = () => globalConfig.get('currentChain');

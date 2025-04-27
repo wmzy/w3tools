@@ -49,14 +49,38 @@ program
 program
   .command('remove-chain')
   .description('Remove chain.')
-  .action(function () {});
+  .argument('[chain]', 'chain key or id to remove')
+  .action(async (chain) => {
+    try {
+      await (await import('../commands/remove-chain')).default(chain);
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
 
 program
   .command('switch-chain')
   .description('Switch chain.')
-  .argument('[target]', 'chain name or id')
-  .option('-f, --fork [chain]', 'Fork from a chain.')
-  .action(function () {});
+  .argument('[target]', 'chain key or id, or "-" to switch to previous chain')
+  .action(async (target) => {
+    try {
+      await (await import('../commands/switch-chain')).default(target);
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
 
 program
   .command('block-number')
