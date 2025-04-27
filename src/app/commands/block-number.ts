@@ -1,19 +1,15 @@
 import { getBlockNumberByTime } from '@/get-block-number';
-import { createPublicClient, http } from 'viem';
+import { createClient } from '../client';
 import { getBlockNumber } from 'viem/actions';
-import * as chains from 'viem/chains';
+import { GlobalOptions } from '../types';
 
-export default async function blockNumber(
-  chain: string,
-  time?: number | string
-) {
-  const client = createPublicClient({
-    chain: chains[chain as keyof typeof chains],
-    transport: http(),
-    batch: {
-      multicall: true,
-    },
-  });
+export default async function blockNumber({
+  time,
+  ...options
+}: {
+  time?: number | string;
+} & GlobalOptions) {
+  const client = createClient(options);
   if (time) {
     const t = +time;
     const block = await getBlockNumberByTime(

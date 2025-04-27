@@ -26,7 +26,9 @@ export const globalConfig = new Conf<GlobalConfig>({
 });
 
 // 获取链配置
-export const getChain = (name: string): Chain & { base?: string } | undefined => {
+export const getChain = (
+  name: string
+): (Chain & { base?: string }) | undefined => {
   try {
     const config = new Conf<Chain>({
       projectName,

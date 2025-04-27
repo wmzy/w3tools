@@ -1,9 +1,6 @@
 import { Command } from 'commander';
-import { version } from '../../package.json';
+import { version } from '../../../package.json';
 import chalk from 'chalk';
-import { createPublicClient, http, stringify } from 'viem';
-import * as chains from 'viem/chains';
-import { getBlock } from 'viem/actions';
 
 const program = new Command();
 
@@ -13,7 +10,23 @@ program
   .version(version)
   .option('-c, --chain <chain>', 'Chain to use (mainnet, hoodi, etc.)');
 
-program.command('chain').description('Show chain info.').option('-d, --define');
+program
+  .command('chain')
+  .description('Show chain info.')
+  .action(async () => {
+    const globalOptions = program.opts();
+    try {
+      await (await import('../commands/chain')).default(globalOptions);
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
 
 program
   .command('define-chain')
@@ -21,7 +34,7 @@ program
   .option('-f, --fork [chain]', 'Fork from a chain.')
   .action(async (options) => {
     try {
-      await (await import('./define-chain')).default(options.fork);
+      await (await import('../commands/define-chain')).default(options);
     } catch (error) {
       console.error(
         chalk.red(
@@ -56,8 +69,8 @@ program
     try {
       const globalOptions = program.opts();
       await (
-        await import('./block-number')
-      ).default(globalOptions.chain, options.time);
+        await import('../commands/block-number')
+      ).default({ ...globalOptions, ...options });
     } catch (error) {
       console.error(
         chalk.red(
@@ -90,12 +103,12 @@ program
   .action(async (options) => {
     try {
       const globalOptions = program.opts();
-      const client = createPublicClient({
-        chain: chains[globalOptions.chain as keyof typeof chains],
-        transport: http(),
+      await (
+        await import('../commands/block')
+      ).default({
+        ...globalOptions,
+        ...options,
       });
-      const block = await getBlock(client, options);
-      console.log(chalk.green(`Block: ${stringify(block)}`));
     } catch (error) {
       console.error(
         chalk.red(

@@ -11,7 +11,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
-        cli: resolve(__dirname, 'src/cli/index.ts'),
+        cli: resolve(__dirname, 'src/app/cli/index.ts'),
       },
       name: 'w3tools',
       formats: ['es', 'cjs'],
