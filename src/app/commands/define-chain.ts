@@ -65,11 +65,11 @@ export default async function defineChain({ fork }: { fork?: string }) {
     });
   } while (!(await testRpcConnection(client)));
 
-  // 获取链 ID
+  // Get chain ID
   chain.id = await getChainId(client);
   console.log(chalk.green(`Detected chain ID: ${chain.id}`));
 
-  // 获取链名称
+  // Get chain name
   chain.name = await input({
     message: 'Chain name:',
     default: `${chain.name} Copy`,
