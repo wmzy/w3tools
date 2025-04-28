@@ -119,6 +119,30 @@ program
   });
 
 program
+  .command('set-address')
+  .description('Set address info.')
+  .argument('<address>', 'address')
+  .argument('<name>', 'name')
+  .option('-t, --type <type>', 'type (contract, wallet)')
+  .option('-a, --abi <abi>', 'abi')
+  .option('-p, --is-proxy', 'is proxy')
+  .action(async (address, name, options) => {
+    try {
+      await (
+        await import('../commands/set-address')
+      ).default(address, name, options);
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
+
+program
   .command('block-number')
   .description('Returns the number of the most recent block seen.')
   .option(
@@ -169,6 +193,30 @@ program
         ...globalOptions,
         ...options,
       });
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
+
+program
+  .command('call')
+  .description('Calls a contract method.')
+  .argument('[contract]', 'contract name or address')
+  .argument('[...args]', 'method arguments')
+  .option('-a, --abi <abi>', 'abi')
+  .option('-m, --method <method>', 'method name')
+  .option('-b, --block <block>', 'block number or tag')
+  .action(async (contract, args, options) => {
+    try {
+      await (
+        await import('../commands/call')
+      ).default({ ...program.opts(), contract, args, ...options });
     } catch (error) {
       console.error(
         chalk.red(

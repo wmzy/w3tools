@@ -6,6 +6,8 @@ import {
   name as projectName,
   version as projectVersion,
 } from '../../package.json';
+import { Abi, Address } from 'viem';
+import * as chains from 'viem/chains';
 
 type GlobalConfig = {
   currentChain: string;
@@ -29,6 +31,9 @@ export const globalConfig = new Conf<GlobalConfig>({
 export const getChain = (
   name: string
 ): (Chain & { base?: string }) | undefined => {
+  const builtin = chains[name as keyof typeof chains];
+  if (builtin) return builtin;
+
   try {
     const config = new Conf<Chain>({
       projectName,
@@ -74,3 +79,16 @@ export const removeChain = (name: string) => {
   });
   config.clear();
 };
+
+export type AddressConfig = {
+  contracts: { name: string; address: Address; abi?: Abi; isProxy?: boolean }[];
+  wallets: { name: string; address: Address }[];
+};
+
+export function getAddressConfig() {
+  const config = new Conf<AddressConfig>({
+    projectName,
+    configName: 'addresses',
+  });
+  return config;
+}
