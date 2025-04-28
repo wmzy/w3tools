@@ -83,6 +83,42 @@ program
   });
 
 program
+  .command('set-rpc')
+  .description('Set RPC URL for a chain.')
+  .argument('<...urls>', 'RPC URL')
+  .action(async (...urls) => {
+    try {
+      await (await import('../commands/set-rpc')).default({ urls });
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
+
+program
+  .command('add-rpc')
+  .description('Add RPC URL for a chain.')
+  .argument('<...urls>', 'RPC URL')
+  .action(async (...urls) => {
+    try {
+      await (await import('../commands/add-rpc')).default({ urls });
+    } catch (error) {
+      console.error(
+        chalk.red(
+          'Error:',
+          error instanceof Error ? error.message : 'Unknown error'
+        )
+      );
+      process.exit(1);
+    }
+  });
+
+program
   .command('block-number')
   .description('Returns the number of the most recent block seen.')
   .option(
