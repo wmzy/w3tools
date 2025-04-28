@@ -4,10 +4,22 @@ import chalk from 'chalk';
 
 const program = new Command();
 
+process.on('unhandledRejection', (error, promise) => {
+  if (program.opts().debug) {
+    throw error;
+  }
+  console.error(
+    chalk.red('Error:'),
+    error instanceof Error ? error.message : 'Unknown error'
+  );
+  process.exit(1);
+});
+
 program
   .name('w3tools')
   .description('A collection of Web3 tools')
   .version(version)
+  .option('-d, --debug', 'Debug mode')
   .option('-c, --chain <chain>', 'Chain to use (mainnet, hoodi, etc.)');
 
 program
@@ -15,17 +27,7 @@ program
   .description('Show chain info.')
   .action(async () => {
     const globalOptions = program.opts();
-    try {
-      await (await import('../commands/chain')).default(globalOptions);
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (await import('../commands/chain')).default(globalOptions);
   });
 
 program
@@ -33,17 +35,7 @@ program
   .description('Define chain.')
   .option('-f, --fork [chain]', 'Fork from a chain.')
   .action(async (options) => {
-    try {
-      await (await import('../commands/define-chain')).default(options);
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (await import('../commands/define-chain')).default(options);
   });
 
 program
@@ -51,17 +43,7 @@ program
   .description('Remove chain.')
   .argument('[chain]', 'chain key or id to remove')
   .action(async (chain) => {
-    try {
-      await (await import('../commands/remove-chain')).default(chain);
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (await import('../commands/remove-chain')).default(chain);
   });
 
 program
@@ -69,17 +51,7 @@ program
   .description('Switch chain.')
   .argument('[target]', 'chain key or id, or "-" to switch to previous chain')
   .action(async (target) => {
-    try {
-      await (await import('../commands/switch-chain')).default(target);
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (await import('../commands/switch-chain')).default(target);
   });
 
 program
@@ -87,17 +59,7 @@ program
   .description('Set RPC URL for a chain.')
   .argument('<...urls>', 'RPC URL')
   .action(async (...urls) => {
-    try {
-      await (await import('../commands/set-rpc')).default({ urls });
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (await import('../commands/set-rpc')).default({ urls });
   });
 
 program
@@ -105,17 +67,7 @@ program
   .description('Add RPC URL for a chain.')
   .argument('<...urls>', 'RPC URL')
   .action(async (...urls) => {
-    try {
-      await (await import('../commands/add-rpc')).default({ urls });
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (await import('../commands/add-rpc')).default({ urls });
   });
 
 program
@@ -127,19 +79,9 @@ program
   .option('-a, --abi <abi>', 'abi')
   .option('-p, --is-proxy', 'is proxy')
   .action(async (address, name, options) => {
-    try {
-      await (
-        await import('../commands/set-address')
-      ).default(address, name, options);
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (
+      await import('../commands/set-address')
+    ).default(address, name, options);
   });
 
 program
@@ -150,20 +92,10 @@ program
     'Timestamp in seconds (e.g. 1672531200) or a date string'
   )
   .action(async (options) => {
-    try {
-      const globalOptions = program.opts();
-      await (
-        await import('../commands/block-number')
-      ).default({ ...globalOptions, ...options });
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    const globalOptions = program.opts();
+    await (
+      await import('../commands/block-number')
+    ).default({ ...globalOptions, ...options });
   });
 
 program
@@ -185,23 +117,13 @@ program
     false
   )
   .action(async (options) => {
-    try {
-      const globalOptions = program.opts();
-      await (
-        await import('../commands/block')
-      ).default({
-        ...globalOptions,
-        ...options,
-      });
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    const globalOptions = program.opts();
+    await (
+      await import('../commands/block')
+    ).default({
+      ...globalOptions,
+      ...options,
+    });
   });
 
 program
@@ -213,19 +135,9 @@ program
   .option('-m, --method <method>', 'method name')
   .option('-b, --block <block>', 'block number or tag')
   .action(async (contract, args, options) => {
-    try {
-      await (
-        await import('../commands/call')
-      ).default({ ...program.opts(), contract, args, ...options });
-    } catch (error) {
-      console.error(
-        chalk.red(
-          'Error:',
-          error instanceof Error ? error.message : 'Unknown error'
-        )
-      );
-      process.exit(1);
-    }
+    await (
+      await import('../commands/call')
+    ).default({ ...program.opts(), contract, args, ...options });
   });
 
 program.parse(process.argv);
