@@ -5,6 +5,7 @@
   "bin": {
     "w3tools": "./dist/cli.es.js"
   },
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -82,6 +83,7 @@
     "commander": "^13.1.0",
     "conf": "^13.1.0",
     "env-editor": "^1.1.0",
+    "fetch-fun": "^0.3.3",
     "inquirer": "^12.5.2",
     "open-editor": "^5.1.0",
     "viem": "^2.26.1"

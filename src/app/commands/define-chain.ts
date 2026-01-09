@@ -92,6 +92,50 @@ export default async function defineChain({ fork }: { fork?: string }) {
     },
   });
 
+  // Configure native currency
+  const editNativeCurrency = await confirm({
+    message: 'Edit native currency?',
+    default: false,
+  });
+
+  if (editNativeCurrency) {
+    const currencyName = await input({
+      message: 'Native currency name:',
+      default: chain.nativeCurrency?.name || 'Ether',
+      validate: (value) => {
+        if (!value) return 'Currency name is required';
+        return true;
+      },
+    });
+
+    const currencySymbol = await input({
+      message: 'Native currency symbol:',
+      default: chain.nativeCurrency?.symbol || 'ETH',
+      validate: (value) => {
+        if (!value) return 'Currency symbol is required';
+        return true;
+      },
+    });
+
+    const currencyDecimals = await input({
+      message: 'Native currency decimals:',
+      default: chain.nativeCurrency?.decimals?.toString() || '18',
+      validate: (value) => {
+        const num = parseInt(value, 10);
+        if (isNaN(num) || num < 0 || num > 255) {
+          return 'Decimals must be a number between 0 and 255';
+        }
+        return true;
+      },
+    });
+
+    chain.nativeCurrency = {
+      name: currencyName,
+      symbol: currencySymbol,
+      decimals: parseInt(currencyDecimals, 10),
+    };
+  }
+
   const multicall3BlockCreated = await getContractDeployedBlockNumber(
     client,
     '0xca11bde05977b3631167028862be2a173976ca11'

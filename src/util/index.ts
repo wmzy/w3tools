@@ -1,23 +1,20 @@
 import { getAddress } from "viem";
 
 export function sleep(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve) => {
-    if (signal?.aborted) return resolve();
+  if (!signal) {
+    return new Promise<void>((resolve) => void setTimeout(resolve, ms));
+  }
 
-    const timeout = setTimeout(() => {
-      resolve();
-    }, ms);
+  if (signal.aborted) return Promise.resolve();
 
-    if (signal) {
-      signal.addEventListener(
-        "abort",
-        () => {
-          clearTimeout(timeout);
-          resolve();
-        },
-        { once: true }
-      );
-    }
+  const { promise, resolve } = Promise.withResolvers<void>();
+
+  const timeout = setTimeout(resolve, ms);
+  signal.addEventListener('abort', resolve as any);
+
+  return promise.finally(() => {
+    signal.removeEventListener('abort', resolve as any);
+    clearTimeout(timeout);
   });
 }
 
@@ -47,15 +44,6 @@ export function tryParseJSON<T>(json: any, defaultValue?: T): T | undefined {
   } catch (e) {
     return defaultValue;
   }
-}
-
-export function withResolvers<T = void>() {
-  let resolve, reject;
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-  return { promise, resolve, reject };
 }
 
 export function toAddress(address: string) {

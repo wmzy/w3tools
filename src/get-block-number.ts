@@ -1,9 +1,8 @@
-import { Block, BlockTag, Client, createPublicClient, http } from 'viem';
+import { Block, BlockTag, Client } from 'viem';
 import { getBlock as _getBlock } from 'viem/actions';
-import { mainnet, goerli } from 'viem/chains';
+import { range } from './util';
 
 import { max, min } from './util/bigint';
-import { range } from './util';
 
 type SupportedBlockTag = Exclude<BlockTag, 'pending'>;
 type SupportedBlock = Block<bigint, false, SupportedBlockTag>;
@@ -74,9 +73,11 @@ async function getBlockNumberByTimeBase(
       toBigInt((timestamp - beforeTime) / blockTime) + before;
     const estimated = max(before + 1n, min(estimatedBlock, after - 1n));
     const floatLeft = max(before, estimated - floatBlocks);
+    // const floatLeft = (before + estimated) / 2n;
     const floatRight = min(estimated + floatBlocks, after);
+    // const floatRight = (estimated + after) / 2n;
 
-    return [floatLeft, estimatedBlock, floatRight] as const;
+    return [floatLeft, estimated, floatRight] as const;
   };
 
   const estimated = estimateBlocks();
@@ -85,10 +86,20 @@ async function getBlockNumberByTimeBase(
   );
   const estimatedIndex = estimatedTimes.findIndex((time) => time > timestamp);
   if (estimatedIndex === -1) {
-    return getBlockNumberByTimeBase(client, timestamp, estimated[2], after);
+    return getBlockNumberByTimeBase(
+      client,
+      timestamp,
+      estimated[2],
+      after - 1n
+    );
   }
   if (estimatedIndex === 0) {
-    return getBlockNumberByTimeBase(client, timestamp, before, estimated[1]);
+    return getBlockNumberByTimeBase(
+      client,
+      timestamp,
+      before + 1n,
+      estimated[0]
+    );
   }
   return getBlockNumberByTimeBase(
     client,
@@ -124,18 +135,8 @@ export async function getBlockNumberByTime(
     throw new Error('timestamp is out of range');
   }
 
-  return getBlockNumberByTimeBase(client, t, before.number, after.number);
-}
+  const beforeNumber =
+    before.timestamp === 0n ? before.number + 1n : before.number;
 
-export async function getBlockNumber(
-  network: string = 'mainnet'
-): Promise<bigint> {
-  const chain = network === 'mainnet' ? mainnet : goerli;
-  const client = createPublicClient({
-    chain,
-    transport: http(),
-  });
-
-  const block = await getBlock(client, { blockTag: 'latest' });
-  return block.number;
+  return getBlockNumberByTimeBase(client, t, beforeNumber, after.number);
 }

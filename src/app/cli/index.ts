@@ -39,6 +39,14 @@ program
   });
 
 program
+  .command('edit-chain')
+  .description('Edit existing chain configuration.')
+  .argument('[chain]', 'chain key or id to edit')
+  .action(async (chain) => {
+    await (await import('../commands/edit-chain')).default({ chain });
+  });
+
+program
   .command('remove-chain')
   .description('Remove chain.')
   .argument('[chain]', 'chain key or id to remove')

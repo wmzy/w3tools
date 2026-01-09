@@ -26,6 +26,9 @@ importers:
       env-editor:
         specifier: ^1.1.0
         version: 1.1.0
+      fetch-fun:
+        specifier: ^0.3.3
+        version: 0.3.3
       inquirer:
         specifier: ^12.5.2
         version: 12.5.2(@types/node@22.14.0)
@@ -1528,6 +1531,9 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  fetch-fun@0.3.3:
+    resolution: {integrity: sha512-2KMIiizK548dM1kSawbuxF8/ad07OOstqo595h3P2x6gToyNyxT7QKR4NaQVhzw8U8+tRL4q5Q6eq0gtaNyJ6w==}
 
   figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
@@ -4552,6 +4558,8 @@ snapshots:
   fdir@6.4.3(picomatch@4.0.2):
     optionalDependencies:
       picomatch: 4.0.2
+
+  fetch-fun@0.3.3: {}
 
   figures@3.2.0:
     dependencies:
