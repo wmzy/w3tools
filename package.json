@@ -1,6 +1,6 @@
 {
   "name": "w3tools",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "bin": {
     "w3tools": "./dist/cli.es.js"
