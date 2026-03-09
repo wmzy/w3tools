@@ -18,7 +18,7 @@
     "commit": "lint-staged && git-cz -n",
     "build": "vite build --emptyOutDir && npm run build:types",
     "build:watch": "vite build --watch",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build:types": "tsc -p tsconfig.build.json && echo '{\"type\": \"commonjs\"}' > dist/types/package.json",
     "dev": "vite",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
