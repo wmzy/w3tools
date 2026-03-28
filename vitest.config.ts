@@ -8,6 +8,9 @@ export default mergeConfig(
       globals: true,
       include: ['test/**/*.ts'],
       exclude: ['test/**/*.d.ts'],
+      coverage: {
+        reporter: ['text', 'html', 'lcov'],
+      },
     },
   })
 );
