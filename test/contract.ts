@@ -1,17 +1,23 @@
-import { Address, createPublicClient } from 'viem';
-import { http } from 'viem';
+import { Address, createPublicClient, fallback, http } from 'viem';
 import { hasContractDeployed, isContracts } from '../src/contract';
 import { mainnet } from 'viem/chains';
 import { zeroAddress } from 'viem';
 import { rangeMap } from '@/util';
 
+function createTestClient() {
+  return createPublicClient({
+    chain: mainnet,
+    transport: fallback([
+      http('https://ethereum-rpc.publicnode.com'),
+      http(),
+    ]),
+  });
+}
+
 describe('contract', () => {
   it('should return true if contract deployed', async ({ expect }) => {
     const result = await hasContractDeployed(
-      createPublicClient({
-        chain: mainnet,
-        transport: http(),
-      }),
+      createTestClient(),
       '0xcA11bde05977b3631167028862bE2a173976CA11'
     );
     expect(result).toBe(true);
@@ -19,7 +25,7 @@ describe('contract', () => {
 
   it('should return false if contract not deployed', async ({ expect }) => {
     const result = await hasContractDeployed(
-      createPublicClient({ chain: mainnet, transport: http() }),
+      createTestClient(),
       zeroAddress
     );
     expect(result).toBe(false);
@@ -27,7 +33,7 @@ describe('contract', () => {
 
   it('should return true if contract deployed', async ({ expect }) => {
     const result = await isContracts(
-      createPublicClient({ chain: mainnet, transport: http() }),
+      createTestClient(),
       [
         '0xcA11bde05977b3631167028862bE2a173976CA11',
         zeroAddress,
@@ -132,7 +138,7 @@ describe('contract', () => {
     ].sort(() => (Math.random() > 0.5 ? 1 : -1));
 
     const result = await isContracts(
-      createPublicClient({ chain: mainnet, transport: http() }),
+      createTestClient(),
       addresses
     );
 
