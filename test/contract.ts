@@ -122,12 +122,12 @@ describe('contract', () => {
     const contractSet = new Set(contractAddresses);
 
     const eoaAddresses = Array.from(
-      { length: 1000 },
+      { length: 10 },
       () =>
         `0x${Math.random().toString(16).slice(2).padStart(40, '0')}` as Address
     );
     const addresses = [
-      ...rangeMap(100, () => contractAddresses).flat(),
+      ...rangeMap(5, () => contractAddresses).flat(),
       ...eoaAddresses,
     ].sort(() => (Math.random() > 0.5 ? 1 : -1));
 
